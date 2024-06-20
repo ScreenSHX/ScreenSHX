@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>ScreenSHX</title>
+    <link rel="stylesheet" href="src/css/main.css">
+</head>
+<body>
+    <div id="header">
+        <div id="left-header">
+            <h1>ScreenSHX</h1>
+        </div>
+        <div id="right-header">
+            <button id="minimize-btn" onclick="window.electron.windowControls('minimize')">_</button>
+            <button id="maximize-btn" onclick="window.electron.windowControls('maximize')">□</button>
+            <button id="close-btn" onclick="window.electron.windowControls('close')">X</button>
+        </div>
+    </div>
+    <div id="content">
+        <h1>Devices</h1>
+        <button id="notifytest">Notify</button>
+    </div>
+    <script src="src/js/notify.js"></script>
+</body>
+</html>

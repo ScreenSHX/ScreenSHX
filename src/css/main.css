@@ -1,0 +1,67 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+#header {
+    background-color: #555555;
+    height: 30px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0 10px;
+    -webkit-app-region: drag;
+}
+
+#left-header h1 {
+    font-size: 15px;
+    font-family: "Trebuchet MS", Verdana, sans-serif;
+    color: #ffffff;
+    margin: 0;
+}
+
+#right-header {
+    display: flex;
+    align-items: center;
+}
+
+#right-header button {
+    background: none;
+    border: none;
+    color: #ffffff;
+    font-size: 15px;
+    margin-left: 10px;
+    cursor: pointer;
+    -webkit-app-region: no-drag;
+}
+
+#right-header button:hover {
+    color: #ff0000;
+}
+
+#content {
+    margin: 25px 30px;
+    padding: 15px;
+    font-family: 'Trebuchet MS', Verdana, sans-serif;
+    background-color: white;
+}
+
+#content fieldset {
+    margin: 0;
+    padding: 10px auto;
+    border: none;
+}
+
+#content fieldset h2 {
+    color: red;
+}
+
+#content fieldset h3 {
+    margin-top: 10px;
+    color: black;
+}
+
+body {
+    background-color: #eeeeee;
+}
