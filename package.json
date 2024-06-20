@@ -1,0 +1,21 @@
+{
+  "name": "ScreenSHX",
+  "version": "1.0.0",
+  "description": "Screensharing client",
+  "main": "main.js",
+  "author": "InvraNet",
+  "license": "MIT",
+  "devDependencies": {
+    "electron": "^31.0.2",
+    "node-notifier": "^10.0.1"
+  },
+  "scripts": {
+    "start": "electron ."
+  },
+  "build": {
+    "appId": "com.screenshx",
+    "asarUnpack": [
+      "./node_modules/node-notifier/**/*"
+    ]
+  }
+}
