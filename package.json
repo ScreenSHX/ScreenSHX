@@ -1,7 +1,7 @@
 {
   "name": "ScreenSHX",
   "version": "1.0.0",
-  "description": "Screensharing client",
+  "description": "Electron screensharing client",
   "main": "main.js",
   "author": "InvraNet",
   "license": "MIT",
