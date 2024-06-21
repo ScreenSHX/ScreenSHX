@@ -1,10 +1,11 @@
-const { app, BrowserWindow, ipcMain } = require('electron');
+const { app, BrowserWindow, ipcMain, globalShortcut } = require('electron');
 const path = require('path');
 const notifier = require('node-notifier');
 
 const createWindow = () => {
   const win = new BrowserWindow({
-    width: 800,
+    width: 1000,
+    minWidth: 1000,
     height: 600,
     frame: false,
     webPreferences: {
@@ -48,6 +49,12 @@ const createWindow = () => {
 };
 
 app.whenReady().then(() => {
+  globalShortcut.register("CommandOrControl+W", () => {
+    return 0; /* Returns 0 */
+});
+globalShortcut.register("F11", () => {
+  return 0; /* Returns 0 */
+});
   createWindow();
   app.setAppUserModelId("com.screenshx");
   app.on('activate', () => {
