@@ -1,0 +1,15 @@
+#header {
+    -webkit-app-region: drag;
+}
+
+#right-header button {
+    -webkit-app-region: no-drag;
+}
+
+#contpan {
+    -webkit-app-region: drag;
+}
+
+#contpan button {
+    -webkit-app-region: no-drag;
+}
