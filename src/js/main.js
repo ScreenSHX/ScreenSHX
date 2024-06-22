@@ -7,7 +7,7 @@ document.addEventListener('DOMContentLoaded', () => {
       } else if (platform === "darmin") {
         document.getElementById('contpan').style.display = "";
         document.getElementById('header').remove();
-      } else if (platform === "darwin") {
+      } else if (platform === "linux") {
         document.getElementById('contpan').remove();
 	      document.getElementById('header').remove();
       }
