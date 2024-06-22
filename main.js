@@ -1,69 +1,100 @@
 const { app, BrowserWindow, ipcMain, globalShortcut } = require('electron');
+const nativeImage = require('electron').nativeImage
 const path = require('path');
 const notifier = require('node-notifier');
 
-const createWindow = () => {
-  const win = new BrowserWindow({
-    width: 1000,
+const image = nativeImage.createFromPath('icon.png')
+let mainWindow;
+const isMac = process.platform === 'darwin';
+const isWin = process.platform === 'win32';
+const isLinux = process.platform === 'linux';
+
+function createWindow(platformRuntime) {
+
+  mainWindow = new BrowserWindow({
+    width: 1200,
     minWidth: 1000,
-    height: 600,
-    frame: false,
+    height: 650,
+    minHeight: 550,
+    frame: platformRuntime,
+    titleBarStyle: platformRuntime ? 'hiddenInset' : 'default',
+    trafficLightPosition: {x: 8, y: 8},
     webPreferences: {
       preload: path.join(__dirname, 'preload.js'),
       contextIsolation: true,
       enableRemoteModule: false,
       nodeIntegration: false
-    }
+    },
+    icon: path.join(__dirname, isMac ? 'screenshx.icns' : 'screenshx.ico')
   });
 
-  win.setIcon(path.join(__dirname, 'screenshx.ico'));
-  win.loadFile('index.html');
+  mainWindow.loadFile('index.html');
+
+  mainWindow.webContents.on('did-finish-load', () => {
+    mainWindow.webContents.send('platform-info', process.platform);
+  });
 
   ipcMain.on('window-controls', (event, action) => {
     switch (action) {
       case 'minimize':
-        win.minimize();
+        mainWindow.minimize();
         break;
       case 'maximize':
-        if (win.isMaximized()) {
-          win.unmaximize();
+        if (mainWindow.isMaximized()) {
+          mainWindow.unmaximize();
         } else {
-          win.maximize();
+          mainWindow.maximize();
         }
         break;
       case 'close':
-        win.close();
+        mainWindow.close();
         break;
     }
   });
 
   ipcMain.on('notify', (event, noteTitle, message) => {
     notifier.notify({
-      appName: "ScreenSHX",
+      appName: 'ScreenSHX',
       title: noteTitle,
       message: message,
       wait: true,
       icon: path.join(__dirname, 'screenshx.ico')
     });
   });
-};
+
+  app.on('activate', () => {
+    if (BrowserWindow.getAllWindows().length === 0) {
+      createWindow();
+    }
+  });
+
+  app.on('window-all-closed', () => {
+    if (process.platform !== 'darwin') {
+      app.quit();
+    }
+  });
+
+  if (!isMac || !isLinux) {
+    mainWindow.webContents.on('did-finish-load', () => {
+      mainWindow.setIgnoreMouseEvents(false);
+    });
+  }
+}
 
 app.whenReady().then(() => {
-  globalShortcut.register("CommandOrControl+W", () => {
-    return 0; /* Returns 0 */
-});
-globalShortcut.register("F11", () => {
-  return 0; /* Returns 0 */
-});
-  createWindow();
-  app.setAppUserModelId("com.screenshx");
-  app.on('activate', () => {
-    if (BrowserWindow.getAllWindows().length === 0) createWindow();
-  });
+  if (isMac) {
+    createWindow(isMac);
+    app.setAppUserModelId('com.screenshx'); 
+    app.dock.setIcon(image);
+  } else if (isWin) {
+    createWindow(isLinux);
+    app.setAppUserModelId('com.screenshx'); 
+  } else if (isLinux) {
+    createWindow(isLinux);
+    app.setAppUserModelId('com.screenshx'); 
+  }
 });
 
-app.on('window-all-closed', () => {
-  if (process.platform !== 'darwin') {
-    app.quit();
-  }
+process.on('unhandledRejection', (error) => {
+  console.error('Unhandled Promise Rejection:', error);
 });
