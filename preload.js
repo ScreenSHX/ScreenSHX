@@ -9,5 +9,8 @@ contextBridge.exposeInMainWorld('electron', {
   },
   windowControls: (action) => {
     ipcRenderer.send('window-controls', action);
+  },
+  receive: (channel, func) => {
+    ipcRenderer.on(channel, (event, ...args) => func(...args));
   }
 });
