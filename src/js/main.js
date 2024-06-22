@@ -1,12 +1,19 @@
-document.getElementById('minimize-btn').addEventListener('click', () => {
-    window.electron.send('window-controls', 'minimize');
-  });
-  
-  document.getElementById('maximize-btn').addEventListener('click', () => {
-    window.electron.send('window-controls', 'maximize');
-  });
-  
-  document.getElementById('close-btn').addEventListener('click', () => {
-    window.electron.send('window-controls', 'close');
-  });
-  
+document.addEventListener('DOMContentLoaded', () => {
+  try {
+    window.electron.receive('platform-info', (platform) => {
+      if (platform === "win32") {
+        document.getElementById('header').style.display = "";
+        document.getElementById('contpan').style.display = "none";
+      } else if (platform === "darmin") {
+        document.getElementById('contpan').style.display = "";
+        document.getElementById('header').style.display = "none";
+      } else if (platform === "darmin") {
+        document.getElementById('contpan').style.display = "";
+        document.getElementById('header').style.display = "none";
+      }
+    });
+  } catch {
+    document.getElementById('contpan').style.display = "";
+    document.getElementById('header').style.display = "none";
+  }
+});
