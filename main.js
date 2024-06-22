@@ -19,6 +19,7 @@ function createWindow(platformRuntime) {
     frame: platformRuntime,
     titleBarStyle: platformRuntime ? 'hiddenInset' : 'default',
     trafficLightPosition: {x: 8, y: 8},
+    autoHideMenuBar: true,
     webPreferences: {
       preload: path.join(__dirname, 'preload.js'),
       contextIsolation: true,

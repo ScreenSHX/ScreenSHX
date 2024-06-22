@@ -8,8 +8,8 @@ document.addEventListener('DOMContentLoaded', () => {
         document.getElementById('contpan').style.display = "";
         document.getElementById('header').remove();
       } else if (platform === "darwin") {
-        document.getElementById('contpan').style.display = "";
-	document.getElementById('header').remove();
+        document.getElementById('contpan').remove();
+	      document.getElementById('header').remove();
       }
     });
   } catch {
