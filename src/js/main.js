@@ -3,17 +3,17 @@ document.addEventListener('DOMContentLoaded', () => {
     window.electron.receive('platform-info', (platform) => {
       if (platform === "win32") {
         document.getElementById('header').style.display = "";
-        document.getElementById('contpan').style.display = "none";
+        document.getElementById('contpan').remove();
       } else if (platform === "darmin") {
         document.getElementById('contpan').style.display = "";
-        document.getElementById('header').style.display = "none";
-      } else if (platform === "darmin") {
+        document.getElementById('header').remove();
+      } else if (platform === "darwin") {
         document.getElementById('contpan').style.display = "";
-        document.getElementById('header').style.display = "none";
+	document.getElementById('header').remove();
       }
     });
   } catch {
     document.getElementById('contpan').style.display = "";
-    document.getElementById('header').style.display = "none";
+    document.getElementById('header').remove();
   }
 });
