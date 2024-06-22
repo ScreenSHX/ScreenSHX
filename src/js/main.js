@@ -4,7 +4,7 @@ document.addEventListener('DOMContentLoaded', () => {
       if (platform === "win32") {
         document.getElementById('header').style.display = "";
         document.getElementById('contpan').remove();
-      } else if (platform === "darmin") {
+      } else if (platform === "darwin") {
         document.getElementById('contpan').style.display = "";
         document.getElementById('header').remove();
       } else if (platform === "linux") {
