@@ -1,5 +1,5 @@
 {
-  "name": "ScreenSHX",
+  "name": "sceenshx",
   "version": "1.0.0",
   "description": "Electron screensharing client",
   "main": "main.js",

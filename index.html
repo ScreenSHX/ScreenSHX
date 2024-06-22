@@ -3,23 +3,50 @@
 <head>
     <meta charset="UTF-8">
     <title>ScreenSHX</title>
-    <link rel="stylesheet" href="src/css/main.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+    <link href="./src/css/main.css" rel="stylesheet">
+    <link href="./src/css/draggable.css" rel="stylesheet">
+    <link href="./src/css/menu.css" rel="stylesheet">
+    <link href="./src/css/settings-btn.css" rel="stylesheet">
 </head>
-<body>
-    <div id="header">
-        <div id="left-header">
-            <h1>ScreenSHX</h1>
+<body class="bg-gray-200">
+    <div id="header" class="bg-gray-700 h-8 flex justify-between items-center select-none">
+        <div id="left-header" class="flex items-center">
+            <img src="./screenshx.ico" id="favicon" class="ml-2 w-5 h-5 rounded">
+            <h1 class="text-white text-sm font-medium ml-2">ScreenSHX</h1>
         </div>
-        <div id="right-header">
-                <button id="minimize-btn" onclick="window.electron.windowControls('minimize')">-</button>
-                <button id="maximize-btn" onclick="window.electron.windowControls('maximize')">□</button>
-                <button id="close-btn" onclick="window.electron.windowControls('close')">×</button>
+        <div id="right-header" class="flex items-center">
+            <button id="settings-btn" class="bg-transparent border-none text-white text-sm cursor-pointer no-drag w-11 h-8 hover:bg-gray-800 transition duration-300"><i class="fa fa-cog"></i></button>
+            <button id="minimize-btn" onclick="window.electron.windowControls('minimize')" class="bg-transparent border-none text-white text-sm cursor-pointer no-drag w-11 h-8 hover:bg-gray-800 transition duration-300">-</button>
+            <button id="maximize-btn" onclick="window.electron.windowControls('maximize')" class="bg-transparent border-none text-white text-sm cursor-pointer no-drag w-11 h-8 hover:bg-gray-800 transition duration-300">□</button>
+            <button id="close-btn" onclick="window.electron.windowControls('close')" class="bg-transparent border-none text-white text-sm cursor-pointer no-drag w-11 h-8 hover:bg-red-600 transition duration-300">×</button>
         </div>
     </div>
-    <div id="content">
-        <h1>Devices</h1>
-        <button id="notifytest">Notify</button>
+    <div id="contpan" class="h-8 flex justify-between items-center select-none" style="background-color: rgb(55 65 81);">
+        <div id="left-header" class="flex items-center">
+
+        </div>
+        <div id="middle-header" class="flex items-center">
+            <! -- Dynamically chan title. -->
+        </div>
+        <div id="right-header" class="flex items-center">
+            <button id="settings-btn1"><i class="fa fa-cog"></i></button>
+        </div>
+    </div>    
+    <div id="content" class="m-6 p-4 bg-white font-sans">
+        <h1 class="text-2xl">Devices</h1>
+        <button id="notifytest" class="mt-4 p-2 bg-blue-500 text-white rounded hover:bg-blue-600">Notify</button>
     </div>
+    <div id="settingsmodal" class="hidden">
+        <div id="settings" class="text-center mt-14 mr-6 ml-6 bg-white opacity-100 w-74 mx-auto p-5 rounded shadow-lg">
+            <h1 class="text-xl mb-4">Settings</h1>
+            <select name="recorder" id="recorderDD" class="w-full p-2 border border-gray-300 rounded">
+            </select>
+        </div>
+    </div>
+    <script src="src/js/main.js"></script>
+    <script src="src/js/drag.js"></script>
     <script src="src/js/notify.js"></script>
+    <script src="src/js/settingsmodal.js"></script>
 </body>
 </html>
