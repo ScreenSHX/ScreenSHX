@@ -9,13 +9,23 @@ const isMac = process.platform === 'darwin';
 const isWin = process.platform === 'win32';
 const isLinux = process.platform === 'linux';
 
-function createWindow(platformRuntime) {
+if (isWin) {
+  app.setUserTasks([{
+      program: process.execPath,
+      arguments: '--new-window',
+      iconPath: path.join(__dirname, "..", "..", "screenshx.ico"),
+      iconIndex: 0,
+      title: 'ScreenSHX',
+      description: 'Screensharing software.'
+  }])
+}
 
+function createWindow(platformRuntime) {
   mainWindow = new BrowserWindow({
     width: 1200,
-    minWidth: 1000,
+    minWidth: 500,
     height: 650,
-    minHeight: 550,
+    minHeight: 500,
     frame: platformRuntime,
     titleBarStyle: platformRuntime ? 'hiddenInset' : 'default',
     trafficLightPosition: {x: 8, y: 8},

@@ -1,3 +1,3 @@
-document.getElementById('notifytest').addEventListener('click', () => {
-    window.electron.notify('Notification Title', "value");
-  });
+function notify(title, body) {
+  window.electron.notify(title, body);
+}
