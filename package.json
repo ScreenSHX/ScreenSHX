@@ -6,7 +6,6 @@
   "author": "InvraNet",
   "license": "MIT",
   "dependencies": {
-    "electron": "^31.0.2",
     "node-notifier": "^10.0.1"
   },
   "devDependencies": {
@@ -15,21 +14,36 @@
   },
   "scripts": {
     "start": "electron .",
-    "build": "electron-builder"
+    "package:win": "electron-packager . ScreenSHX --platform=win32 --arch=x64,ia32 --icon=screenshx.png --overwrite --out=build",
+    "package:mac": "electron-packager . ScreenSHX --platform=darwin --arch=x64,arm64 --icon=screenshx.icns --overwrite --out=build",
+    "package:linux": "electron-packager . ScreenSHX --platform=linux --arch=x64,arm64 --overwrite --out=build",
+    "package:all": "electron-packager . ScreenSHX --platform=win32,darwin,linux --arch=x64,ia32,arm64 --icon=screenshx --overwrite --out=build"
   },
   "build": {
-    "appId": "com.screenshx",
+    "appId": "com.screenshx.screenshx",
     "productName": "ScreenSHX",
     "asarUnpack": [
       "./node_modules/node-notifier/**/*"
     ],
     "copyright": "Copyright © 2019 ${author}",
+    "directories": {
+      "output": "build"
+    },
     "mac": {
-      "icon": "./public/icons/mac/icon.icns",
-      "category": "public.app-category.utilities"
+      "icon": "./screenshx.icns",
+      "category": "public.app-category.utilities",
+      "target": [
+        {
+          "target": "dmg",
+          "arch": [
+            "x64",
+            "arm64"
+          ]
+        }
+      ]
     },
     "win": {
-      "icon": "./screenshx.ico",
+      "icon": "./screenshx.png",
       "target": [
         {
           "target": "nsis",
@@ -40,13 +54,32 @@
         }
       ]
     },
+    "linux": {
+      "icon": "./screenshx.png",
+      "target": [
+        {
+          "target": "AppImage",
+          "arch": [
+            "x64",
+            "arm64"
+          ]
+        }
+      ]
+    },
     "files": [
       "./build/**/*",
       "./dist/**/*",
       "./node_modules/**/*",
       "./src/**/*",
       "*.js",
-      "screenshx.ico"
+      "./screenshx.png"
+    ],
+    "extraResources": [
+      {
+        "from": "resources/",
+        "to": "resources/",
+        "filter": ["**/*"]
+      }
     ]
   }
 }
