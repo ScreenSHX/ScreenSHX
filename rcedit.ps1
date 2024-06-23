@@ -71,9 +71,9 @@ Set-Attribute "CompanyName" "ScreenSHX" "Company Name"
 
 Write-Color "-> Setting icon... " "Yellow" -NoNewline
 if ($Verbose) {
-    Write-Color "`nCommand: $rceditPath $filePath --set-icon $directoryPath\resources\app\screenshx.ico" "Cyan"
+    Write-Color "`nCommand: $rceditPath $filePath --set-icon $directoryPath\resources\app\screenshx.png" "Cyan"
 }
-& $rceditPath $filePath --set-icon "$directoryPath\resources\app\screenshx.ico"
+& $rceditPath $filePath --set-icon "$directoryPath\resources\app\screenshx.png"
 if ($?) {
     Write-Color "Success" "Green"
 } else {
