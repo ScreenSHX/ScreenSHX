@@ -1,21 +1,52 @@
 {
-  "name": "sceenshx",
+  "name": "screenshx",
   "version": "1.0.0",
   "description": "Electron screensharing client",
   "main": "main.js",
   "author": "InvraNet",
   "license": "MIT",
-  "devDependencies": {
+  "dependencies": {
     "electron": "^31.0.2",
     "node-notifier": "^10.0.1"
   },
+  "devDependencies": {
+    "electron": "^31.0.2",
+    "electron-builder": "^23.6.0"
+  },
   "scripts": {
-    "start": "electron ."
+    "start": "electron .",
+    "build": "electron-builder"
   },
   "build": {
     "appId": "com.screenshx",
+    "productName": "ScreenSHX",
     "asarUnpack": [
       "./node_modules/node-notifier/**/*"
+    ],
+    "copyright": "Copyright © 2019 ${author}",
+    "mac": {
+      "icon": "./public/icons/mac/icon.icns",
+      "category": "public.app-category.utilities"
+    },
+    "win": {
+      "icon": "./screenshx.ico",
+      "target": [
+        {
+          "target": "nsis",
+          "arch": [
+            "x64",
+            "ia32"
+          ]
+        }
+      ]
+    },
+    "files": [
+      "./build/**/*",
+      "./dist/**/*",
+      "./node_modules/**/*",
+      "./src/**/*",
+      "*.js",
+      "screenshx.ico"
     ]
   }
 }
