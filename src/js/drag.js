@@ -1,4 +1,5 @@
 document.addEventListener('DOMContentLoaded', () => {
+  try {
     let offsetX = 0;
     let offsetY = 0;
   
@@ -17,5 +18,7 @@ document.addEventListener('DOMContentLoaded', () => {
         document.removeEventListener('mousemove', handleDrag);
       });
     });
-  });
-  
+  } catch (err) {
+    return 0;
+  }
+});
