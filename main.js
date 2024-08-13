@@ -38,7 +38,7 @@ function createWindow(platformRuntime) {
     },
     icon: path.join(__dirname, isMac ? 'screenshx.icns' : 'screenshx.png')
   });
-
+  mainWindow.webContents.openDevTools();
   mainWindow.loadFile('index.html');
 
   mainWindow.webContents.on('did-finish-load', () => {
@@ -96,6 +96,14 @@ function createWindow(platformRuntime) {
     if (process.platform !== 'darwin') {
       app.quit();
     }
+  });
+
+  app.on('start-screenrecording', () => {
+
+  });
+
+  app.on('stop-screenrecording', () => {
+
   });
 
   if (!isMac || !isLinux) {

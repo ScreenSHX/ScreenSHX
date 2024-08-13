@@ -1,11 +1,10 @@
 const settingsBtn = document.getElementById('settings-btn');
 const settingsModal = document.getElementById('settingsmodal');
 const settings = document.getElementById('settings');
-const settingsNav = document.getElementById('contpan');
 
 function toggleSettingsModal() {
-    if (settingsModal.style.display != "block") {
-        settingsModal.style.display = "block";
+    if (settingsModal.style.display != "flex") {
+        settingsModal.style.display = "flex";
     } else {
         settingsModal.style.display = "none";
     }
