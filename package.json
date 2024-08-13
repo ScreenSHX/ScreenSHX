@@ -1,85 +1,30 @@
 {
-  "name": "screenshx",
+  "name": "ScreenSHX",
   "version": "1.0.0",
-  "description": "Electron screensharing client",
+  "description": "A screensharing app made in electron.",
   "main": "main.js",
-  "author": "InvraNet",
+  "repository": "https://github.com/screenshx/screenshx",
+  "author": "ScreenSHX",
   "license": "MIT",
-  "dependencies": {
-    "node-notifier": "^10.0.1"
-  },
+  "private": false,
   "devDependencies": {
-    "electron": "^31.0.2",
-    "electron-builder": "^23.6.0"
+    "@electron-forge/cli": "^7.4.0",
+    "@electron-forge/maker-deb": "^7.4.0",
+    "@electron-forge/maker-rpm": "^7.4.0",
+    "@electron-forge/maker-squirrel": "^7.4.0",
+    "@electron-forge/maker-zip": "^7.4.0",
+    "@electron-forge/plugin-auto-unpack-natives": "^7.4.0",
+    "@electron-forge/plugin-fuses": "^7.4.0",
+    "@electron/fuses": "^1.8.0",
+    "electron": "^31.3.1"
   },
   "scripts": {
-    "start": "electron .",
-    "package:win": "electron-packager . ScreenSHX --platform=win32 --arch=x64,ia32 --icon=screenshx.png --overwrite --out=build",
-    "package:mac": "electron-packager . ScreenSHX --platform=darwin --arch=x64,arm64 --icon=screenshx.icns --overwrite --out=build",
-    "package:linux": "electron-packager . ScreenSHX --platform=linux --arch=x64,arm64 --overwrite --out=build",
-    "package:all": "electron-packager . ScreenSHX --platform=win32,darwin,linux --arch=x64,ia32,arm64 --icon=screenshx --overwrite --out=build"
+    "start": "electron-forge start",
+    "package": "electron-forge package",
+    "make": "electron-forge make"
   },
-  "build": {
-    "appId": "com.screenshx.screenshx",
-    "productName": "ScreenSHX",
-    "asarUnpack": [
-      "./node_modules/node-notifier/**/*"
-    ],
-    "copyright": "Copyright © 2019 ${author}",
-    "directories": {
-      "output": "build"
-    },
-    "mac": {
-      "icon": "./screenshx.icns",
-      "category": "public.app-category.utilities",
-      "target": [
-        {
-          "target": "dmg",
-          "arch": [
-            "x64",
-            "arm64"
-          ]
-        }
-      ]
-    },
-    "win": {
-      "icon": "./screenshx.png",
-      "target": [
-        {
-          "target": "nsis",
-          "arch": [
-            "x64",
-            "ia32"
-          ]
-        }
-      ]
-    },
-    "linux": {
-      "icon": "./screenshx.png",
-      "target": [
-        {
-          "target": "AppImage",
-          "arch": [
-            "x64",
-            "arm64"
-          ]
-        }
-      ]
-    },
-    "files": [
-      "./build/**/*",
-      "./dist/**/*",
-      "./node_modules/**/*",
-      "./src/**/*",
-      "*.js",
-      "./screenshx.png"
-    ],
-    "extraResources": [
-      {
-        "from": "resources/",
-        "to": "resources/",
-        "filter": ["**/*"]
-      }
-    ]
+  "dependencies": {
+    "electron-squirrel-startup": "^1.0.1",
+    "node-notifier": "^10.0.1"
   }
 }
