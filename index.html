@@ -9,32 +9,43 @@
     <link rel="stylesheet" href="src/css/main.css">
 </head>
 <body>
-    <div id="header"></div>
-    <div id="content">
-        <h1 class="textfonting-title">Devices</h1>
-        <button id="notifytest" onclick="notify('Test Notification', 'I think this test is a success if its came through to you.')">Notify</button>
-        <button id="screentest" onclick="toggleScreenModal()">Test Screen</button>
+<div id="header">
+    <div id="left-header">
+        <img src="screenshx.png">
+        <p>ScreenSHX</p>
     </div>
-    <div id="settingsmodal">
-        <div id="settings">
-            <h1>Settings</h1>
-            <select name="recorder" id="recorderDD"></select>
-        </div>
-    </div>
-    <div id="screenmodal">
-        <div id="screenpicker">
-            <h1>Pick a object to show.</h1>
-            <div id="videoOutput">
+</div>
+<div id="content">
+    <h1 class="textfonting-title">Devices</h1>
+    <button id="notifytest" onclick="notify('Test Notification', 'I think this test is a success if it came through to you.')">Notify</button>
+    <button id="screentest" onclick="toggleScreenModal()">Test Screen</button>
+</div>
 
-            </div>
-            <p>Screens:</p>
-            <select id="selectAvailableScreens"></select>
+<div id="screenmodal">
+    <div id="screenpicker">
+        <h1>Pick a window or screen to show:</h1>
+        <div id="windowsContainer" class="tab-content active">
+        </div>
+        <div id="screensContainer" class="tab-content"></div>
+        <div class="tab-buttons">
+            <button class="tab-button active" id="windowsTab">Windows</button>
+            <button class="tab-button" id="screensTab">Screens</button>
         </div>
     </div>
-    <script src="src/js/frame.js"></script>
-    <script src="src/js/drag.js"></script>
-    <script src="src/js/notify.js"></script>
-    <script src="src/js/settingsmodal.js"></script>
-    <script src="src/js/screenPickerModal.js"></script>
+    <div id="screenPreview">
+        <h1>Is this correct?</h1>
+        <p>Let's see if this is the correct thing to share. A video of your feed will be below.</p>
+        <video autoplay>VIDEO NOT AVAILABLE ELECTRON_DESKTOPCAPTURE FEED NOT AVAILABLE!</video>
+        <div class="modalBottomSet">
+            <div class="left">
+                Select an option.
+            </div>
+            <button>Cancel</button>
+            <button>Start</button>
+        </div>
+    </div>
+</div>
+
+<script async src="src/js/screenshareHandler.js"></script>
 </body>
 </html>

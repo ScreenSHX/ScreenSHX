@@ -12,5 +12,20 @@ contextBridge.exposeInMainWorld('electron', {
   },
   receive: (channel, func) => {
     ipcRenderer.on(channel, (event, ...args) => func(...args));
-  }
+  },
+  getSources: () => ipcRenderer.invoke('get-sources'),
+  startCapture: (sourceId) => {
+    ipcRenderer.send('start-capture', sourceId);
+  },
+  onFullscreenStatusChange: (callback) => {
+    ipcRenderer.on('fullscreen-status', (event, isFullscreen) => {
+      callback(isFullscreen);
+    });
+  },
+  onPlatformInfo: (callback) => {
+    ipcRenderer.on('platform-info', (event, platform) => {
+      callback(platform);
+    });
+  },
+  startFeed: (sourceId) => ipcRenderer.send('start-screen-feed', sourceId)
 });

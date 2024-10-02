@@ -1,4 +1,4 @@
-const { app, BrowserWindow, ipcMain, globalShortcut } = require('electron');
+const { app, BrowserWindow, ipcMain, globalShortcut, desktopCapturer } = require('electron');
 const nativeImage = require('electron').nativeImage;
 const path = require('path');
 const notifier = require('node-notifier');
@@ -16,7 +16,7 @@ if (isWin) {
     iconPath: path.join(__dirname, "..", "..", "screenshx.png"),
     iconIndex: 0,
     title: 'ScreenSHX',
-    description: 'Screensharing software.'
+    description: 'Screensharing software for all.'
   }]);
 }
 
@@ -26,9 +26,13 @@ function createWindow(platformRuntime) {
     minWidth: 1000,
     height: 650,
     minHeight: 550,
-    frame: platformRuntime,
-    titleBarStyle: platformRuntime ? 'hiddenInset' : 'default',
-    trafficLightPosition: { x: 8, y: 8 },
+    titleBarStyle: 'hidden',
+    trafficLightPosition: { x: 16, y: 12 },
+    titleBarOverlay: {
+      color: '#1f1f1f',
+      symbolColor: 'white',
+      height: 30,
+    },
     autoHideMenuBar: true,
     webPreferences: {
       preload: path.join(__dirname, 'preload.js'),
@@ -38,7 +42,6 @@ function createWindow(platformRuntime) {
     },
     icon: path.join(__dirname, isMac ? 'screenshx.icns' : 'screenshx.png')
   });
-  mainWindow.webContents.openDevTools();
   mainWindow.loadFile('index.html');
 
   mainWindow.webContents.on('did-finish-load', () => {
@@ -82,6 +85,20 @@ function createWindow(platformRuntime) {
     });
   });
 
+  ipcMain.handle('get-sources', async (event) => {
+    const sources = await desktopCapturer.getSources({ types: ['window', 'screen'] });
+    sources.map(source => ({
+      id: source.id,
+      name: source.name,
+      thumbnail: source.thumbnail.toDataURL()
+    }));
+    return sources
+  });
+
+  ipcMain.on('start-capture', (event, sourceId) => {
+    mainWindow.webContents.send('start-webrtc', sourceId);
+  });
+
   globalShortcut.register('F11', () => {
     mainWindow.setFullScreen(!mainWindow.isFullScreen());
   });
@@ -98,7 +115,7 @@ function createWindow(platformRuntime) {
     }
   });
 
-  app.on('start-screenrecording', () => {
+  app.on('start-screen-feed', () => {
 
   });
 
@@ -113,7 +130,15 @@ function createWindow(platformRuntime) {
   }
 }
 
-app.whenReady().then(() => {
+app.whenReady().then(async () => {
+  const sources = await desktopCapturer.getSources({ types: ['window', 'screen'] });
+  sources.map(source => ({
+    id: source.id,
+    name: source.name,
+    thumbnail: source.thumbnail.toDataURL()
+  }));
+  console.log(sources)
+
   if (isMac) {
     createWindow(isMac);
     app.setAppUserModelId('com.screenshx');
