@@ -1,13 +1,31 @@
 const { app, BrowserWindow, ipcMain, globalShortcut, desktopCapturer } = require('electron');
 const nativeImage = require('electron').nativeImage;
 const path = require('path');
+const dgram = require('dgram');
 const notifier = require('node-notifier');
 
 const image = nativeImage.createFromPath('icon.png');
 let mainWindow;
+let mediaStream;
+let macPermissions;
+let requestScreenRecordingPermission;
+let requestFullDiskAccessPermission;
 const isMac = process.platform === 'darwin';
 const isWin = process.platform === 'win32';
 const isLinux = process.platform === 'linux';
+let PORT = 12345
+let BROADCAST_ADDR = "255.255.255.255"
+
+
+
+if (isMac) {
+  macPermissions = require('node-mac-permissions');
+  requestScreenRecordingPermission = macPermissions.requestScreenRecordingPermission;
+  requestFullDiskAccessPermission = macPermissions.requestFullDiskAccessPermission;
+} else {
+  requestScreenRecordingPermission = async () => true;
+  requestFullDiskAccessPermission = async () => true;
+}
 
 if (isWin) {
   app.setUserTasks([{
@@ -27,9 +45,10 @@ function createWindow(platformRuntime) {
     height: 650,
     minHeight: 550,
     titleBarStyle: 'hidden',
+    transparent: true,
     trafficLightPosition: { x: 16, y: 12 },
     titleBarOverlay: {
-      color: '#1f1f1f',
+      color: '#272727',
       symbolColor: 'white',
       height: 30,
     },
@@ -43,37 +62,7 @@ function createWindow(platformRuntime) {
     icon: path.join(__dirname, isMac ? 'screenshx.icns' : 'screenshx.png')
   });
   mainWindow.loadFile('index.html');
-
-  mainWindow.webContents.on('did-finish-load', () => {
-    mainWindow.webContents.send('platform-info', process.platform);
-    mainWindow.webContents.send('fullscreen-status', mainWindow.isFullScreen());
-  });
-
-  mainWindow.on('enter-full-screen', () => {
-    mainWindow.webContents.send('fullscreen-status', true);
-  });
-
-  mainWindow.on('leave-full-screen', () => {
-    mainWindow.webContents.send('fullscreen-status', false);
-  });
-
-  ipcMain.on('window-controls', (event, action) => {
-    switch (action) {
-      case 'minimize':
-        mainWindow.minimize();
-        break;
-      case 'maximize':
-        if (mainWindow.isMaximized()) {
-          mainWindow.unmaximize();
-        } else {
-          mainWindow.maximize();
-        }
-        break;
-      case 'close':
-        mainWindow.close();
-        break;
-    }
-  });
+  startDeviceDiscoveryServer();
 
   ipcMain.on('notify', (event, noteTitle, message) => {
     notifier.notify({
@@ -86,17 +75,55 @@ function createWindow(platformRuntime) {
   });
 
   ipcMain.handle('get-sources', async (event) => {
-    const sources = await desktopCapturer.getSources({ types: ['window', 'screen'] });
-    sources.map(source => ({
-      id: source.id,
-      name: source.name,
-      thumbnail: source.thumbnail.toDataURL()
-    }));
+    const sources = await desktopCapturer.getSources({ types: ['window', 'screen'] });    
     return sources
   });
 
-  ipcMain.on('start-capture', (event, sourceId) => {
-    mainWindow.webContents.send('start-webrtc', sourceId);
+  ipcMain.on('start-capture', async (event, sourceId) => {
+    try {
+      const screenRecordingGranted = await requestScreenRecordingPermission();
+      const fullDiskAccessGranted = await requestFullDiskAccessPermission();
+
+      if (!screenRecordingGranted) {
+        console.error('Screen recording permission was not granted');
+        return;
+      }
+      if (!fullDiskAccessGranted) {
+        console.error('Full Disk Access permission was not granted');
+        return;
+      }
+
+      const sources = await desktopCapturer.getSources({ types: ['window', 'screen'] });
+      const source = sources.find(src => src.id === sourceId);
+      const constraints = {
+        audio: {
+          mandatory: {
+            chromeMediaSource: 'desktop',
+            chromeMediaSourceId: sourceId,
+          }
+        },
+        video: {
+          mandatory: {
+            chromeMediaSource: 'desktop',
+            chromeMediaSourceId: sourceId,
+          }
+        }
+      };
+      mediaStream = await navigator.mediaDevices.getUserMedia(constraints);
+      mainWindow.webContents.send('start-webrtc', mediaStream);
+    } catch (error) {
+      console.error('Error starting capture:', error);
+    }
+  });
+
+  ipcMain.on('destroy-screenshare-session', () => {
+    if (mediaStream) {
+      mediaStream.getTracks().forEach(track => track.stop());
+      mediaStream = null;
+      console.log('Screenshare session has been destroyed');
+    } else {
+      console.log('No active screenshare session to destroy');
+    }
   });
 
   globalShortcut.register('F11', () => {
@@ -115,14 +142,6 @@ function createWindow(platformRuntime) {
     }
   });
 
-  app.on('start-screen-feed', () => {
-
-  });
-
-  app.on('stop-screenrecording', () => {
-
-  });
-
   if (!isMac || !isLinux) {
     mainWindow.webContents.on('did-finish-load', () => {
       mainWindow.setIgnoreMouseEvents(false);
@@ -130,26 +149,39 @@ function createWindow(platformRuntime) {
   }
 }
 
-app.whenReady().then(async () => {
-  const sources = await desktopCapturer.getSources({ types: ['window', 'screen'] });
-  sources.map(source => ({
-    id: source.id,
-    name: source.name,
-    thumbnail: source.thumbnail.toDataURL()
-  }));
-  console.log(sources)
 
-  if (isMac) {
-    createWindow(isMac);
-    app.setAppUserModelId('com.screenshx');
-    app.dock.setIcon(image);
-  } else if (isWin) {
-    createWindow(isLinux);
-    app.setAppUserModelId('com.screenshx');
-  } else if (isLinux) {
-    createWindow(isLinux);
-    app.setAppUserModelId('com.screenshx');
-  }
+function startDeviceDiscoveryServer() {
+  const server = dgram.createSocket('udp4');
+  
+  server.on('message', (msg, rinfo) => {
+    try {
+      const devices = JSON.parse(msg.toString());
+      console.log(`Received message from ${rinfo.address}:${rinfo.port}`);
+      console.log('Devices discovered:', devices);
+
+      // Send the discovered devices back to the main window (assuming Electron)
+      if (mainWindow) {
+        mainWindow.webContents.send('devices-discovered', devices);
+      }
+    } catch (error) {
+      console.error('Failed to parse message:', error);
+    }
+  });
+
+  server.on('listening', () => {
+    const address = server.address();
+    console.log(`Server listening on ${address.address}:${address.port}`);
+  });
+
+  server.bind(PORT, () => {
+    server.setBroadcast(true);
+    console.log('Device discovery server started.');
+  });
+}
+
+app.whenReady().then(() => {
+  createWindow();
+  app.setAppUserModelId('com.screenshx');
 });
 
 process.on('unhandledRejection', (error) => {

@@ -23,20 +23,14 @@ async function toggleScreenModal() {
 
     const windowsContainer = document.getElementById('windowsContainer');
     windowsContainer.innerHTML = '';
-
     windows.forEach(source => {
         const previewCard = document.createElement('div');
         previewCard.classList.add('preview-card');
-
-        // Use an arrow function to assign the onclick event
         previewCard.onclick = () => showScreenPreview(source);
-
         const img = document.createElement('img');
         img.src = source.thumbnail.toDataURL();
-
         const appLabel = document.createElement('p');
         appLabel.textContent = source.name;
-
         previewCard.appendChild(img);
         previewCard.appendChild(appLabel);
         windowsContainer.appendChild(previewCard);
@@ -56,7 +50,6 @@ async function toggleScreenModal() {
 }
 
 function showScreenPreview(source) {
-    // Hide screen picker and show screen preview
     document.getElementById('screenpicker').style.display = "none";
     document.getElementById('screenPreview').style.display = "block";
     window.electron.startFeed(source.id);
